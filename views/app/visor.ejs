@@ -1,0 +1,93 @@
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular.min.js"></script>
+
+<script type="text/javascript">
+	var cuenta = angular.module('cuenta', []);
+
+	cuenta.controller('main', function($scope, $http){
+		$http.get('/user?username=<%= req.session.user.username %>').success(function(data){
+			$scope.user = data;
+			console.log($scope.user);
+		});
+
+		var verificado = false;
+
+		$scope.verificar = function(){
+			if($scope.saldo > $scope.user.retirable){
+				$scope.verificacion = "No puedes Retirar esa cantidad";
+				var verificado = false;
+			} else {
+				$scope.verificacion = "Tienes saldo suficiente";
+				var verificado = true;
+			}
+		};
+
+		$scope.refrescar = function(){
+			$http.get('/user?username=<%= req.session.user.	username %>').success(function(data){
+				$scope.user = data;
+				console.log($scope.user);
+			});
+		};
+
+		if(verificado == true && $scope.saldo.length >= 1 && $scope.btc.length >= 6){
+			$scope.solicitar = function(){
+				io.socket.post('/mensage/send', { saldo: $scope.saldo, btc: $scope.btc }, function(err){
+					if(err){
+						console.log(err);
+					} else {
+						console.log("enviado");
+					}
+				});
+			};
+		}
+		
+	});
+</script>
+
+<div ng-app="cuenta" ng-controller="main" class="container" >
+	<div class="jumbotron">
+		<div class="page-header">
+			<h1>Balance de: {{user.username}}</h1>
+		</div>
+		<div class="row">
+			<table class="table">
+				<tr>
+					<td>Saldo Retirable</td>
+					<td>{{user.retirable}}</td>
+				</tr>
+				<tr>
+					<td>Inversion Minera</td>
+					<td>{{user.inversion}}</td>
+				</tr>
+				<tr>
+					<td>Produccion diaria</td>
+					<td>{{user.produccion}}</td>
+				</tr>
+				<tr>
+					<td>Retirar Inversion</td>
+					<td>{{user.capital}}</td>
+				</tr>
+			</table>
+			<button class="btn btn-lh btn-info" ng-click="refrescar()">Refrescar</button>
+			<form action="auth/logout" >
+				<input type="submit" value="Cerrar sesión" class="btn btn-lg btn-info">
+			</form>
+		</div>
+	</div>
+	<div class="container">
+		<div class="jumbotron">
+			<div class="page-header">
+				<h2>Solicitar Retiro</h2>
+			</div>
+			<div class="form-group">
+				<form ng-submit="solicitar()">
+					
+					<label class="label label-lg" for="saldo" style="color: black;">Saldo * {{verificacion}}</label><br>
+					<input type="text" ng-model="saldo"><button ng-click="verificar()" class="btn btn-lg btn-info">Verficar</button><br>
+					<label class="label label-lg" style="color: black;">Dirección BTC *</label><br>
+					<input type="text" ng-model="btc"><br><br>
+					<input type="submit" class="btn btn-lg btn-info" value="Solicitar">
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

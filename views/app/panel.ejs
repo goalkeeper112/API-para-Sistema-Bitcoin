@@ -1,0 +1,121 @@
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular.min.js"></script>
+
+<script type="text/javascript">
+	var cuenta = angular.module('cuenta', []);
+
+	cuenta.controller('main', function($scope, $http){
+		$http.get('/user?username=<%= req.session.user.username %>').success(function(data){
+			$scope.user = data;
+			console.log($scope.user);
+		});
+		
+		$scope.saldo = function(){
+			io.socket.post('/user/saldo', { username: $scope.username, retirable: $scope.Nsaldo }, function(err, data){
+				if(err){
+					console.log(err);
+				} else{
+					return console.log(data);
+				}				
+			});
+		};
+
+		$scope.inversion = function(){
+			io.socket.post('/user/inversion', { username: $scope.username, inversion: $scope.Ninversion }, function(err, data){
+				if(err){
+					console.log(err);
+				} else{
+					return console.log(data);
+				}				
+			});
+		};
+
+		$scope.produccion = function(){
+			io.socket.post('/user/produccion', { username: $scope.username, produccion: $scope.Nproduccion }, function(err, data){
+				if(err){
+					console.log(err);
+				} else{
+					return console.log(data);
+				}				
+			});
+		};
+	});
+</script>
+
+<div ng-app="cuenta" ng-controller="main" class="container" >
+	<div class="jumbotron">
+		<div class="page-header text-center">
+			<h1>Balance de: {{user.username}}</h1>
+		</div>
+		<div class="row">
+			<table class="table">
+				<tr>
+					<td>Saldo Retirable</td>
+					<td>{{user.retirable}}</td>
+				</tr>
+				<tr>
+					<td>Inversion Minera</td>
+					<td>{{user.inversion}}</td>
+				</tr>
+				<tr>
+					<td>Produccion diaria</td>
+					<td>{{user.produccion}}</td>
+				</tr>
+				<tr>
+					<td>Retirar Inversion</td>
+					<td>{{user.capital}}</td>
+				</tr>
+			</table>
+			<form action="auth/logout" >
+				<input type="submit" value="Cerrar sesión" class="btn btn-lg btn-info">
+			</form>
+		</div>
+	</div>
+	<div class="row">
+		<div class="jumbotron">
+			<div class="page-header text-center">
+				<h2>Asignación de Saldo</h2>
+			</div>
+			<div class="form-group">
+				<form ng-submit="saldo()">
+					<label class="label label-lg" style="color: black;">Usuario</label><br>
+					<input type="text" ng-model="username"><br>
+					<label class="label label-lg" style="color: black;">Saldo Retirable</label><br>
+					<input type="text" ng-model="Nsaldo">
+					<button class="btn btn-lg btn-success">Enviar</button>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="jumbotron">
+			<div class="page-header text-center">
+				<h2>Aumentar Inversión</h2>
+			</div>
+			<div class="form-group">
+				<form ng-submit="inversion()">
+					<label class="label label-lg" style="color: black;">Usuario</label><br>
+					<input type="text" ng-model="username"><br>
+					<label class="label label-lg" style="color: black;">Nueva Inversión</label><br>
+					<input type="text" ng-model="Ninversion">
+					<button ng-click="inversion" class="btn btn-lg btn-success">Enviar</button>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="jumbotron">
+			<div class="page-header text-center">
+				<h2>Producción Diaria</h2>
+			</div>
+			<div class="form-group">
+				<form ng-submit="produccion()">
+					<label class="label label-lg" style="color: black;">Usuario</label><br>
+					<input type="text" ng-model="username"><br>
+					<label class="label label-lg" style="color: black;">Nueva Producción</label><br>
+					<input type="text" ng-model="Nproduccion">
+					<button ng-click="produccion" class="btn btn-lg btn-success">Enviar</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

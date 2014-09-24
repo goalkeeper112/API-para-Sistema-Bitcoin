@@ -34,8 +34,18 @@ module.exports.routes = {
 
   '/': {
     view: 'homepage'
-  }
+  },
 
+  '/login': {
+    view: 'auth/login'
+  },
+
+  '/user': {
+    controller: "UserController",
+    action: "read"
+  },
+
+  
   /***************************************************************************
   *                                                                          *
   * Custom routes here...                                                    *

@@ -23,9 +23,7 @@ module.exports = {
 					    	req.session.user = user;
 					    	req.session.authenticated = true;
 					    	req.session.adminAdmitance = true;
-					    	res.send({
-					    		user: user
-					    	});
+					    	res.redirect('/app/panel');
 					    	return console.log(user);
 					    } else{
 					    	return console.log('La contraseña o el usuario no existen');
@@ -40,16 +38,16 @@ module.exports = {
 					    	req.session.user = user;
 					    	req.session.authenticated = true;
 					    	req.session.adminAdmitance = false;
-					    	res.send({
-					    		user: user
-					    	});
+					    	res.redirect('/app/visor');
 					    	return console.log(user);
 					    } else{
+					    	res.send('La contraseña o el usuario no existen');
 					    	return console.log('La contraseña o el usuario no existen');
 					    }
 					});
 				}
 			} else{
+				res.send('La contraseña o el usuario no existen');
 				return console.log('La contraseña o el usuario no existen');
 			}
 		})

@@ -8,32 +8,44 @@ var bcrypt = require('bcrypt');
 module.exports = {
 
   attributes: {
-  		username: {
-  			type: 'string',
-  			required: true,
-  			unique: true
-  		},
+  	username: {
+  		type: 'string',
+  		required: true,
+  		unique: true
+  	},
+  	email: {
+  		type: 'email',
+  		required: true,
+  		unique: true
+  	},
+  	password: {
+  		type: 'string',
+  		required: true
+  	},
 
-  		email: {
-  			type: 'email',
-  			required: true,
-  			unique: true
-  		},
+    retirable: {
+      type: 'float'
+    },
+    
+    inversion: {
+      type: 'float'
+    },
+    produccion: {
+      type: 'float'
+    },
 
-  		password: {
-  			type: 'string',
-  			required: true
-  		},
+    capital: {
+      type: 'float'
+    },
 
-  		balance: {
-  			via: 'Wallet'
-  		},
-
-  		toJSON: function(){
-  			var obj = this.toObject();
-  			delete obj.password;
-  			return obj;
-  		}
+  	toJSON: function(){
+  		var obj = this.toObject();
+  		delete obj.password;
+  		delete obj.createdAt;
+  		delete obj.updatedAt;
+      delete obj.id;
+  		return obj;
+  	}
   },
 
   beforeCreate: function(user, cb){
@@ -44,6 +56,10 @@ module.exports = {
               return cb(null, err);
             } else{
               user.password = hash;
+              user.retirable = 0.0;
+              user.inversion = 0.0;
+              user.produccion = 0.0;
+              user.capital = 0.0;
               console.log(user.password);
               return cb(null, user);
             }

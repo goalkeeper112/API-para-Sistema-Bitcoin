@@ -26,14 +26,15 @@ module.exports.policies = {
   *                                                                          *
   ***************************************************************************/
 
-  '*': true,
-
-  WalletController: {
-    '*': 'admin'
-  },
+  // '*': true,
 
   UserController: {
-    delete: 'admin'
+    '*': 'sessionAuth',
+  },
+
+  AppController: {
+    visor: 'sessionAuth',
+    panel: true
   }
   /***************************************************************************
   *                                                                          *

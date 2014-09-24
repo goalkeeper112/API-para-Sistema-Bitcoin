@@ -1,3 +1,3 @@
-# btcREST
+# JavierStatus
 
 a [Sails](http://sailsjs.org) application
